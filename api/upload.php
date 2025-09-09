@@ -1,0 +1,3 @@
+<?php
+// upload.php placeholder
+?>

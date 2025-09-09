@@ -1,0 +1,3 @@
+<?php
+// signup.php placeholder
+?>

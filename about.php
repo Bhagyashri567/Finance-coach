@@ -1,0 +1,3 @@
+<?php
+// about.php placeholder
+?>

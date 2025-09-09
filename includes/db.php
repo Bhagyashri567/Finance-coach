@@ -1,0 +1,3 @@
+<?php
+// db.php placeholder
+?>
