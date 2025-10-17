@@ -1,3 +1,18 @@
+// Theme toggle and small helpers
+(function(){
+	const toggle = document.getElementById('themeToggle');
+	if (!toggle) return;
+	const root = document.documentElement;
+	const pref = localStorage.getItem('theme') || 'light';
+	root.dataset.theme = pref;
+	toggle.checked = pref === 'dark';
+	toggle.addEventListener('change', function(){
+		root.dataset.theme = this.checked ? 'dark' : 'light';
+		localStorage.setItem('theme', root.dataset.theme);
+		window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: root.dataset.theme } }));
+	});
+})();
+
 /*  ---------------------------------------------------
     Template Name: Loanday
     Description:  Loanday loan HTML Template

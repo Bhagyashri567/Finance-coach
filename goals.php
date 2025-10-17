@@ -1,4 +1,4 @@
-<?php include 'navbar.php'; ?>
+<?php include 'navbar.php'; require_once 'includes/helpers.php'; ?>
 
 <div class="container my-5">
     <h2 class="mb-4 text-center fw-bold">Your Financial Goals</h2>
@@ -40,8 +40,8 @@
             <tbody>
                 <tr>
                     <td>Buy Laptop</td>
-                    <td>$1000</td>
-                    <td>$400</td>
+                    <td><?php echo formatINR(1000); ?></td>
+                    <td><?php echo formatINR(400); ?></td>
                     <td>
                         <div class="progress" style="height: 20px;">
                             <div class="progress-bar bg-success" role="progressbar" style="width: 40%;">40%</div>
@@ -50,8 +50,8 @@
                 </tr>
                 <tr>
                     <td>Emergency Fund</td>
-                    <td>$2000</td>
-                    <td>$1200</td>
+                    <td><?php echo formatINR(2000); ?></td>
+                    <td><?php echo formatINR(1200); ?></td>
                     <td>
                         <div class="progress" style="height: 20px;">
                             <div class="progress-bar bg-info" role="progressbar" style="width: 60%;">60%</div>
@@ -60,8 +60,8 @@
                 </tr>
                 <tr>
                     <td>Vacation Trip</td>
-                    <td>$1500</td>
-                    <td>$300</td>
+                    <td><?php echo formatINR(1500); ?></td>
+                    <td><?php echo formatINR(300); ?></td>
                     <td>
                         <div class="progress" style="height: 20px;">
                             <div class="progress-bar bg-warning" role="progressbar" style="width: 20%;">20%</div>
@@ -94,42 +94,71 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// === Doughnut Chart: Goal Completion ===
-const doughnutCtx = document.getElementById('goalsDoughnut').getContext('2d');
-new Chart(doughnutCtx, {
-    type: 'doughnut',
-    data: {
-        labels: ['Laptop', 'Emergency Fund', 'Vacation'],
+function chartColors(theme){
+	const dark = theme==='dark';
+	return {
+		text: dark ? '#e5e7eb' : '#111827',
+		grid: dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'
+	};
+}
+
+let charts = [];
+function buildCharts(){
+	const theme = document.documentElement.dataset.theme || 'light';
+	const colors = chartColors(theme);
+	charts.forEach(c=>c.destroy());
+	charts = [];
+
+	const doughnutCtx = document.getElementById('goalsDoughnut').getContext('2d');
+	charts.push(new Chart(doughnutCtx, {
+		type: 'doughnut',
+		data: {
+			labels: ['Laptop', 'Emergency Fund', 'Vacation'],
         datasets: [{
             data: [40, 60, 20],
-            backgroundColor: ['#28a745', '#17a2b8', '#ffc107']
+            backgroundColor: ['#1e3a8a', '#88C417', '#0ea5a0']
         }]
-    }
-});
+		},
+		options: {
+			plugins: { legend: { labels: { color: colors.text } } }
+		}
+	}));
 
-// === Line Chart: Savings Growth (Example Data) ===
-const lineCtx = document.getElementById('goalsLine').getContext('2d');
-new Chart(lineCtx, {
-    type: 'line',
-    data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        datasets: [{
-                label: 'Laptop Savings',
-                data: [50, 150, 250, 300, 350, 400],
-                borderColor: '#28a745',
-                fill: false,
-                tension: 0.3
-            },
-            {
-                label: 'Emergency Fund',
-                data: [500, 700, 900, 1000, 1100, 1200],
-                borderColor: '#17a2b8',
-                fill: false,
-                tension: 0.3
-            }
-        ]
-    }
-});
+	const lineCtx = document.getElementById('goalsLine').getContext('2d');
+	charts.push(new Chart(lineCtx, {
+		type: 'line',
+		data: {
+			labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+			datasets: [{
+                label: 'Laptop Savings (₹)',
+					data: [50, 150, 250, 300, 350, 400],
+                borderColor: '#1e3a8a',
+                backgroundColor: 'rgba(30,58,138,0.25)',
+					fill: false,
+					tension: 0.3
+				},
+				{
+                label: 'Emergency Fund (₹)',
+					data: [500, 700, 900, 1000, 1100, 1200],
+                borderColor: '#88C417',
+                backgroundColor: 'rgba(136,196,23,0.25)',
+					fill: false,
+					tension: 0.3
+				}
+			]
+		},
+		options: {
+			plugins: { legend: { labels: { color: colors.text } } },
+			scales: {
+				y: { grid: { color: colors.grid }, ticks: { color: colors.text } },
+				x: { grid: { color: 'transparent' }, ticks: { color: colors.text } }
+			}
+		}
+	}));
+}
+
+buildCharts();
+window.addEventListener('themechange', function(){ buildCharts(); });
 </script>
 
 <?php include 'footer.php'; ?>

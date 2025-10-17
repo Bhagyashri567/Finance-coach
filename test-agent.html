@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agent Test</title>
+</head>
+<body>
+    <h1>Agent Test</h1>
+    <input type="text" id="message" placeholder="Type a message">
+    <button onclick="testAgent()">Send</button>
+    <div id="response"></div>
+
+    <script>
+    async function testAgent() {
+        const message = document.getElementById('message').value;
+        const responseDiv = document.getElementById('response');
+        
+        try {
+            const res = await fetch('/api/agent.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
+            const data = await res.json();
+            responseDiv.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+        } catch (error) {
+            responseDiv.innerHTML = 'Error: ' + error.message;
+        }
+    }
+    </script>
+</body>
+</html>

@@ -1,62 +1,86 @@
 <?php include 'navbar.php'; ?>
 
 <div class="container my-5">
-    <h2 class="mb-4 text-center fw-bold">Financial Chatbot 💬</h2>
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Your Financial Coach</h2>
+        <p class="text-muted">Agentic AI that adapts to your spending and income.</p>
+    </div>
 
-    <!-- Chat Window -->
-    <div class="card glass p-4" style="height: 500px; display: flex; flex-direction: column;">
-        <div id="chatWindow" class="flex-grow-1 overflow-auto mb-3 p-3 border rounded bg-light"
-            style="max-height: 380px;">
-            <!-- Chat messages will appear here -->
-            <div class="text-muted small">🤖 Bot: Hi! I’m your finance assistant. Ask me about your savings, budgets, or
-                goals.</div>
-        </div>
-
-        <!-- Input -->
-        <div class="input-group">
-            <input type="text" id="userInput" class="form-control" placeholder="Type your question..."
-                onkeypress="if(event.key==='Enter'){sendMessage();}">
-            <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4" style="backdrop-filter: blur(10px); background: rgba(255,255,255,.6);">
+                <div class="card-body p-0 d-flex flex-column" style="height: 560px;">
+                    <div id="chatWindow" class="flex-grow-1 overflow-auto p-4" style="background: radial-gradient(1200px 600px at 0% 0%, rgba(30,58,138,.08), transparent), radial-gradient(800px 400px at 100% 100%, rgba(136,196,23,.08), transparent);">
+                        <div class="d-flex align-items-start mb-3">
+                            <div class="me-2 rounded-circle d-flex align-items-center justify-content-center" style="width:36px;height:36px;background:#1e1b4b;color:white;">🤖</div>
+                            <div class="p-3 rounded-3" style="background:#f3f4f6; max-width: 80%;">
+                                Hi! I’m your finance coach. Ask me about budgets, savings, or goals.
+                            </div>
+                        </div>
+                    </div>
+                    <div id="typing" class="px-4 py-2 text-muted small" style="display:none;">Coach is typing…</div>
+                    <div class="p-3 border-top">
+                        <div class="input-group input-group-lg">
+                            <input type="text" id="userInput" class="form-control" placeholder="Type your question...">
+                            <button id="sendBtn" class="btn btn-primary">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-function sendMessage() {
-    const input = document.getElementById("userInput");
-    const chatWindow = document.getElementById("chatWindow");
+(function(){
+    const input = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const chatWindow = document.getElementById('chatWindow');
+    const typing = document.getElementById('typing');
 
-    const message = input.value.trim();
-    if (message === "") return;
-
-    // User message
-    const userMsg = document.createElement("div");
-    userMsg.className = "text-end mb-2";
-    userMsg.innerHTML = `<span class="badge bg-primary p-2">${message}</span>`;
-    chatWindow.appendChild(userMsg);
-
-    // Bot reply (static demo)
-    let reply = "Sorry, I didn’t understand. Try asking about 'budget', 'savings', or 'goals'.";
-
-    if (message.toLowerCase().includes("budget")) {
-        reply = "Your total budget this month is $2500. You’ve used $1200 so far.";
-    } else if (message.toLowerCase().includes("savings")) {
-        reply = "You have saved $1,900 till now, keep it up!";
-    } else if (message.toLowerCase().includes("goals")) {
-        reply = "You’re 40% towards your Laptop goal and 60% towards your Emergency Fund.";
+    function appendUser(msg){
+        const wrap = document.createElement('div');
+        wrap.className = 'd-flex align-items-start justify-content-end mb-3';
+        wrap.innerHTML = `<div class="p-3 rounded-3 text-white" style="background:var(--brand-primary); max-width:80%;">${msg}</div>`;
+        chatWindow.appendChild(wrap);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    setTimeout(() => {
-        const botMsg = document.createElement("div");
-        botMsg.className = "text-start mb-2";
-        botMsg.innerHTML = `<span class="badge bg-secondary p-2">🤖 ${reply}</span>`;
-        chatWindow.appendChild(botMsg);
+    function appendBot(msg){
+        const wrap = document.createElement('div');
+        wrap.className = 'd-flex align-items-start mb-3';
+        wrap.innerHTML = `
+            <div class="me-2 rounded-circle d-flex align-items-center justify-content-center" style="width:36px;height:36px;background:#1e3a8a;color:white;">🤖</div>
+            <div class="p-3 rounded-3" style="background:#eef2f6; max-width:80%; white-space:pre-wrap;">${msg}</div>
+        `;
+        chatWindow.appendChild(wrap);
         chatWindow.scrollTop = chatWindow.scrollHeight;
-    }, 600);
+    }
 
-    input.value = "";
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-}
+    async function send(){
+        const msg = (input.value || '').trim();
+        if (!msg) return;
+        appendUser(msg);
+        input.value = '';
+        typing.style.display = 'block';
+        try{
+            console.log('Sending message:', msg);
+            console.log('FinAI object:', window.FinAI);
+            const res = await window.FinAI.sendToAgent(msg);
+            console.log('Response:', res);
+            const text = res.reply || res.error || 'Sorry, something went wrong.';
+            appendBot(text);
+        }catch(e){
+            console.error('Error:', e);
+            appendBot('Network error: ' + e.message);
+        }finally{
+            typing.style.display = 'none';
+        }
+    }
+
+    sendBtn.addEventListener('click', send);
+    input.addEventListener('keypress', function(e){ if(e.key==='Enter') send(); });
+})();
 </script>
 
 <?php include 'footer.php'; ?>

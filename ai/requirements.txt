@@ -1,1 +1,1 @@
-# requirements placeholder
+pymysql==1.1.0

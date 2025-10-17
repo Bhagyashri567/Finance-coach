@@ -3,16 +3,11 @@
 <style>
 /* ==== NEW THEME COLORS ==== */
 :root {
-    --brand-primary: #ad0ca8ff;
-    /* coral */
-    --brand-secondary: #fb24dbff;
-    /* amber */
-    --brand-accent: #ec4899;
-    /* rose */
-    --brand-dark: #1e1b4b;
-    /* deep indigo */
-    --brand-light: #fafaf9;
-    /* warm gray */
+    --brand-primary: #1e3a8a; /* navy */
+    --brand-secondary: #88C417; /* green from template/logo */
+    --brand-accent: #0ea5a0; /* teal accent */
+    --brand-dark: #1e1b4b; /* deep indigo */
+    --brand-light: #f2f5f9; /* soft light */
 }
 
 body {
@@ -29,7 +24,7 @@ body {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(249, 115, 22, .4);
+    box-shadow: 0 10px 20px rgba(30, 58, 138, .4);
 }
 
 .btn-outline-light:hover {
@@ -72,7 +67,7 @@ body {
 }
 
 .progress-bar {
-    background: linear-gradient(90deg, var(--brand-secondary), var(--brand-accent));
+    background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
 }
 
 /* ==== HERO SLIDER ==== */
@@ -167,7 +162,7 @@ body {
                 </p>
                 <div class="mt-3 d-flex flex-wrap gap-2">
                     <a href="/dashboard.php" class="btn btn-primary btn-lg">Open Dashboard</a>
-                    <a href="/insights.php" class="btn btn-outline-light btn-lg">See AI Insights</a>
+                    <a href="/chatbot.php" class="btn btn-outline-light btn-lg">Chat with AI Coach</a>
                 </div>
             </div>
 

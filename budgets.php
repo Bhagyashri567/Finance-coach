@@ -1,4 +1,4 @@
-<?php include 'navbar.php'; ?>
+<?php include 'navbar.php'; require_once 'includes/helpers.php'; ?>
 
 <div class="container my-5">
     <h2 class="mb-4 text-center fw-bold">Manage Your Budgets</h2>
@@ -37,21 +37,21 @@
             <tbody>
                 <tr>
                     <td>Food</td>
-                    <td>$500</td>
-                    <td>$300</td>
-                    <td>$200</td>
+                    <td><?php echo formatINR(500); ?></td>
+                    <td><?php echo formatINR(300); ?></td>
+                    <td><?php echo formatINR(200); ?></td>
                 </tr>
                 <tr>
                     <td>Transport</td>
-                    <td>$200</td>
-                    <td>$120</td>
-                    <td>$80</td>
+                    <td><?php echo formatINR(200); ?></td>
+                    <td><?php echo formatINR(120); ?></td>
+                    <td><?php echo formatINR(80); ?></td>
                 </tr>
                 <tr>
                     <td>Entertainment</td>
-                    <td>$150</td>
-                    <td>$50</td>
-                    <td>$100</td>
+                    <td><?php echo formatINR(150); ?></td>
+                    <td><?php echo formatINR(50); ?></td>
+                    <td><?php echo formatINR(100); ?></td>
                 </tr>
             </tbody>
         </table>
@@ -79,46 +79,65 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// === Pie Chart Data ===
-const pieCtx = document.getElementById('budgetPieChart').getContext('2d');
-new Chart(pieCtx, {
-    type: 'pie',
-    data: {
-        labels: ['Food', 'Transport', 'Entertainment'],
-        datasets: [{
-            data: [500, 200, 150],
-            backgroundColor: ['#ad0ca8', '#fb24db', '#ec4899']
-        }]
-    }
-});
+function chartColors(theme){
+	const dark = theme==='dark';
+	return {
+		text: dark ? '#e5e7eb' : '#111827',
+		grid: dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'
+	};
+}
 
-// === Bar Chart Data ===
-const barCtx = document.getElementById('budgetBarChart').getContext('2d');
-new Chart(barCtx, {
-    type: 'bar',
-    data: {
+let charts = [];
+function buildCharts(){
+	const theme = document.documentElement.dataset.theme || 'light';
+	const colors = chartColors(theme);
+	charts.forEach(c=>c.destroy());
+	charts = [];
+
+	const pieCtx = document.getElementById('budgetPieChart').getContext('2d');
+	charts.push(new Chart(pieCtx, {
+		type: 'pie',
+		data: {
         labels: ['Food', 'Transport', 'Entertainment'],
-        datasets: [{
-                label: 'Budget',
-                data: [500, 200, 150],
-                backgroundColor: '#ad0ca8'
-            },
-            {
-                label: 'Spent',
-                data: [300, 120, 50],
-                backgroundColor: '#fb24db'
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'top'
-            }
-        }
-    }
-});
+			datasets: [{
+				data: [500, 200, 150],
+            backgroundColor: ['#1e3a8a', '#88C417', '#0ea5a0']
+			}]
+		}
+	}));
+
+	const barCtx = document.getElementById('budgetBarChart').getContext('2d');
+	charts.push(new Chart(barCtx, {
+		type: 'bar',
+		data: {
+			labels: ['Food', 'Transport', 'Entertainment'],
+			datasets: [{
+                label: 'Budget (₹)',
+					data: [500, 200, 150],
+                backgroundColor: '#1e3a8a'
+				},
+				{
+                label: 'Spent (₹)',
+					data: [300, 120, 50],
+                backgroundColor: '#88C417'
+				}
+			]
+		},
+		options: {
+			responsive: true,
+			plugins: {
+				legend: { position: 'top', labels: { color: colors.text } }
+			},
+			scales: {
+				y: { beginAtZero: true, grid: { color: colors.grid }, ticks: { color: colors.text } },
+				x: { grid: { color: 'transparent' }, ticks: { color: colors.text } }
+			}
+		}
+	}));
+}
+
+buildCharts();
+window.addEventListener('themechange', function(){ buildCharts(); });
 </script>
 
 <?php include 'footer.php'; ?>

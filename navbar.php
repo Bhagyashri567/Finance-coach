@@ -17,17 +17,21 @@ $auth = isset($_SESSION['uid']);
 
     <style>
     :root {
-        --brand-primary: #ad0ca8ff;
-        /* coral */
-        --brand-secondary: #fb24dbff;
-        /* amber */
-        --brand-accent: #ec4899;
-        /* rose */
-        --brand-dark: #1e1b4b;
-        /* deep indigo */
-        --brand-light: #fafaf9;
-        /* warm gray */
+        --brand-primary: #1e3a8a; /* navy */
+        --brand-secondary: #88C417; /* green from template/logo */
+        --brand-accent: #0ea5a0; /* teal accent */
+        --brand-dark: #1e1b4b; /* deep indigo */
+        --brand-light: #f2f5f9; /* soft light */
     }
+
+    /* Glass + dark theme */
+    .glass { backdrop-filter: blur(10px); background: rgba(255,255,255,.65); border: 1px solid rgba(255,255,255,.45); }
+    html[data-theme='dark'] body { background: #0f172a !important; color: #e5e7eb; }
+    html[data-theme='dark'] .navbar { background: linear-gradient(90deg, #312e81, #1e1b4b) !important; }
+    html[data-theme='dark'] .navbar-nav .nav-link { color: #e5e7eb !important; }
+    html[data-theme='dark'] .card { background-color: rgba(30,27,75,.6); color: #e5e7eb; border-color: rgba(255,255,255,.08); }
+    html[data-theme='dark'] .bg-light { background-color: #0f172a !important; }
+    html[data-theme='dark'] .text-muted { color: #9ca3af !important; }
 
     .topbar {
         background: var(--brand-dark);
@@ -35,7 +39,7 @@ $auth = isset($_SESSION['uid']);
     }
 
     .navbar {
-        background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+        background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
     }
 
     .navbar-brand span {
@@ -109,6 +113,10 @@ $auth = isset($_SESSION['uid']);
                     </li>
                     <?php endif; ?>
                 </ul>
+                <div class="form-check form-switch ms-lg-3">
+                    <input class="form-check-input" type="checkbox" id="themeToggle">
+                    <label class="form-check-label text-white" for="themeToggle">Dark</label>
+                </div>
             </div>
         </div>
     </nav>
